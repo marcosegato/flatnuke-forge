@@ -1,0 +1,11 @@
+
+STEP 1
+Create a new directory into /sections, for example /sections/01_Contacts
+
+STEP 2
+Copy into your new directory the files:
+	|- capcha.php
+	`- section.php
+
+STEP 3
+Access your Flatnuke portal and try your new section! :)

@@ -1,0 +1,269 @@
+<?php
+
+/*
+ * FlatNuke Contact Section
+ * Copyright (C) 2006-2007 Marco Segato
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the license, or any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, inc., 59 Temple Place - Suite 320, Boston, MA  02111-1207, USA
+ */
+
+/*
+ * Flatnuke (http://www.flatnuke.org/) section for contacting the administrator
+ *
+ * Author    Marco Segato  <segatom@users.sourceforge.net>
+ * Website   http://marcosegato.altervista.org/
+ * Version   2.0
+ * Date      20070710
+ *
+ * Some code included is from Giovanni Piller Cottrer <giovanni.piller@gmail.com> http://gigasoft.altervista.org/
+ * Library capcha.php is taken from Simple PHP Blog project: see http://www.simplephpblog.com/ for license terms
+ *
+ */
+
+#---------------------------------------#
+#            SECURITY CHECKS            #
+#---------------------------------------#
+
+// rewrite root for direct access to this file with Ajax
+if (eregi("section.php",$_SERVER['PHP_SELF'])) {
+	Header("Location: ../../index.php");
+	die();
+}
+
+// sanitizing variables
+$req     = getparam("REQUEST_URI", PAR_SERVER, SAN_NULL);
+$req     = str_replace("&", "&amp;", $req);
+$ip      = getparam("REMOTE_ADDR", PAR_SERVER, SAN_NULL);
+$mod     = getparam("mod",         PAR_GET,    SAN_FLAT);
+$name    = getparam("name",        PAR_POST,   SAN_FLAT);
+$contact = getparam("contact",     PAR_POST,   SAN_FLAT);
+$subject = getparam("subject",     PAR_POST,   SAN_FLAT);
+$message = getparam("message",     PAR_POST,   SAN_NULL);
+$capcha  = getparam("capcha",      PAR_POST,   SAN_FLAT);
+
+#---------------------------------------#
+#             CONFIGURATION             #
+#---------------------------------------#
+
+// attachement's max size (byte)
+$max_size = 512000;	//--> 500 Kb
+// file extensions allowed
+$ext_allowed = array('gz','tgz','tar','rar','zip','bz2','7z','rpm','deb','doc','rtf',
+                'sxw','stw','sxi','csv','sxc','sxd','xls','pdf','ps','gzip','html',
+                'htm','txt','jpeg','jpg','gif','png','odt','ott','odm','oth','ods',
+                'ots','odg','otg','odp','otp','odf','odb','sig','asc','java');
+// default charset 
+$charset = "iso-8859-1";
+
+#---------------------------------------#
+#           OTHER DEFINITIONS           #
+#---------------------------------------#
+
+// include Flatnuke global configuration
+global $lang;
+global $admin_mail;
+
+// language definitions
+switch($lang) {
+	case "it":
+		define("_CN_TITLE", "Completa il form sottostante per contattarmi direttamente al mio indirizzo email:");
+		define("_CN_SUBJECT", "Soggetto");
+		define("_CN_ATTACH", "Allegato");
+		define("_CN_ANTISPAM", "Anti-Spam: inserisci");
+		define("_CN_ADVISORY", "Avviso: utilizzando questo form accetti che venga registrato il tuo IP, <b>al solo scopo di sicurezza</b>,
+			per evitare attivita' di spam verso il mio indirizzo di posta elettronica; l'informazione verra'
+			allegata alla mail spedita e non sara' archiviata in nessun database.");
+		define("_CN_CLEAR", "Pulisci");
+		define("_CN_CODERROR", "Codice Anti-Spam errato!");
+		define("_CN_SENDOK", "Messaggio inviato con successo!");
+		define("_CN_SENDKO", "Impossibile inviare il messaggio, server di posta non configurato o non correttamente installato");
+		define("_CN_ADDRESSERROR", "Il tuo indirizzo email presenta qualche errore!");
+		define("_CN_WROTE", "ha scritto");
+		define("_CN_IP", "Indirizzo IP");
+		define("_CN_SIZEKO", "La dimensione del file supera quella consentita dall'amministratore del sito.");
+		define("_CN_EXTKO", "Estensione del file non consentita dall'amministratore del sito.");
+	break;
+	default:
+		define("_CN_TITLE", "Complete the form down here to contact me directly to my email address:");
+		define("_CN_SUBJECT", "Subject");
+		define("_CN_ATTACH", "Attachment");
+		define("_CN_ANTISPAM", "Anti-Spam: insert");
+		define("_CN_ADVISORY", "Warning: by using this form you accept that your IP will be registered, <b>for security reasons only</b>,
+			to avoid spam activities to my email address; the information will be attached to the mail, and will not be archieved in any database.");
+		define("_CN_CLEAR", "Clean");
+		define("_CN_CODERROR", "Wrong anti-spam code!");
+		define("_CN_SENDOK", "The message has been send correctly!");
+		define("_CN_SENDKO", "Can't send the message, maybe the mail server is not configured or is not rightly installed");
+		define("_CN_ADDRESSERROR", "Check your email address, not right!");
+		define("_CN_WROTE", "wrote");
+		define("_CN_IP", "IP address");
+		define("_CN_SIZEKO", "File size exceeds what allowed by site's administrator.");
+		define("_CN_EXTKO", "File extension not allowed by site's administrator.");
+}
+
+// link to go back
+$goback = "<p><a href=\"$req\">Back</a></p><meta http-equiv=\"Refresh\" content=\"2; URL=$req\">";
+
+#---------------------------------------#
+#             MAIN EXECUTION            #
+#---------------------------------------#
+
+### no valid contact value is passed, starting session ###
+if($contact==""){
+	session_start();
+	// generate security code for this session
+	$_SESSION['security_code'] = rand(100000, 999999);
+	// check the availability of GD libraries, otherwise it uses plain text
+	if(function_exists('imagecreate')) {
+		$sec_image_code = "<img src='sections/$mod/capcha.php' alt='antispam code' title='antispam code'>";
+	} else {
+		$sec_image_code = $_SESSION['security_code'];
+	}
+	// print the HTML form
+	echo "<p>"._CN_TITLE."</p>\n
+		<div style='margin-left: 1em'>\n
+		<form action='$req' method='post' enctype='multipart/form-data'>\n
+			<label for='name'>"._FNOME.":</label><br /><input type='text' name='name' style='width:60%' /><br /><br />\n
+			<label for='contact'>"._FEMAIL.":</label><br /><input type='text' name='contact' style='width:60%' /><br /><br />\n
+			<label for='subject'>"._CN_SUBJECT.":</label><br /><input type='text' name='subject' style='width:95%' /><br /><br />\n
+			<label for='message'>"._FMESS.":</label><br /><textarea name='message' rows='20' style='width:95%'></textarea><br /><br />\n
+			<label for='attachment'>"._CN_ATTACH."</label><br /><input type='file' name='attachment' /><br /><br />\n
+			<label for='capcha'>"._CN_ANTISPAM."<br />\t<b>"; printf($sec_image_code); echo "</b></label><br />\n
+			<input type='text' name='capcha' value='' />\n
+			<p>"._CN_ADVISORY."</p>\n
+			<input type='submit' value='"._FP_FINVIA."' /> <input type='reset' value='"._CN_CLEAR."' />\n
+		</form>\n
+		</div>\n";
+} else {
+	### valid contact value is passed, starting session ###
+	session_start();
+	// checking the value of anti-spam code inserted
+	if($capcha != $_SESSION['security_code']) {
+		// anti-spam code is NOT right
+		echo _CN_CODERROR."<br>";
+		unset($_SESSION['security_code']);
+		// back or automatic redirect to the index after 2 seconds
+		echo $goback;
+		return;
+	}
+	// anti-spam code IS right: build the argument to pass to mail() function
+	$headers = "From: $contact\r";
+	$message = "$name "._CN_WROTE.":\n".stripslashes($message)."\n\n"._CN_IP.": $ip";
+	$msg = "";
+	// retrieve informations about the file attached
+	$attachment = $_FILES['attachment']['tmp_name'];
+	$attachment_type = $_FILES['attachment']['type'];
+	$attachment_name = $_FILES['attachment']['name'];
+	$attachment_size = $_FILES['attachment']['size'];
+	
+	// check correct file upload
+	if (is_uploaded_file($attachment)) {
+		// verify attachment's size
+		if($attachment_size > $max_size) {
+			echo _CN_SIZEKO;
+			return;
+		}
+		// verifiy attachement's extension
+		if(!in_array(get_file_extension($attachment_name), $ext_allowed)) {
+			echo _CN_EXTKO;
+			return;
+		}
+	  // read file content
+	  $file = fopen($attachment,'rb');
+	  $data = fread($file, filesize($attachment));
+	  fclose($file);
+		// adapt file to MIME base64 format
+	  $data = chunk_split(base64_encode($data));
+	  $semi_rand = md5(time());
+	  $mime_boundary = "==Multipart_Boundary_x{$semi_rand}x";
+	  // add attachment specific headers
+	  $headers .= "\nMIME-Version: 1.0\n";
+	  $headers .= "Content-Type: multipart/mixed;\n";
+	  $headers .= " boundary=\"{$mime_boundary}\"";
+		// define MIME/multi-part message with separator
+	  $msg .= "This is a multi-part message in MIME format.\n\n";
+	  $msg .= "--{$mime_boundary}\n";
+		// add the text of the message
+	  $msg .= "Content-Type: text/plain; charset=\"$charset\"\n";
+	  $msg .= "Content-Transfer-Encoding: 7bit\n\n";
+	  $msg .= $message."\n\n";
+	  $msg .= "--{$mime_boundary}\n";
+		// add the file in attach
+	  $msg .= "Content-Disposition: attachment;\n";
+	  $msg .= " filename=\"{$attachment_name}\"\n";
+	  $msg .= "Content-Transfer-Encoding: base64\n\n";
+	  $msg .= $data . "\n\n";
+	  $msg .= "--{$mime_boundary}--\n";
+	  $message = $msg;
+	}
+
+	// checkin the mail address
+	if(check_mail_address($contact)){
+		$sendmail = mail($admin_mail, $subject, $message, $headers);
+		if($sendmail){
+			// the mail was correctly send, kill session security code
+			echo _CN_SENDOK."<br />";
+			unset($_SESSION['security_code']);
+			// back or automatic redirect to the index after 2 seconds
+			echo $goback;
+		} else {
+			// the server do not support sending emails, kill session security code
+			echo _CN_SENDKO."<br />";
+			unset($_SESSION['security_code']);
+		}
+	} else {
+		// an error occurred in the mail address, kill session security code and go back
+		echo _CN_ADDRESSERROR."<br />";
+		unset($_SESSION['security_code']);
+	}
+
+}
+
+
+#---------------------------------------#
+#             FUNCTIONS USED            #
+#---------------------------------------#
+
+/**
+ * Check the validity and the availability of a mail address
+ *
+ * This function checks first of all if the mail address is written correctly;
+ * moreover, some mail servers let check if the domain specified into the address
+ * really exists; this feature is disabled by default: to turn it on, just change
+ * $check_dns variable from FALSE to TRUE.
+ *
+ * @author Giovanni Piller Cottrer <giovanni.piller@gmail.com>
+ *
+ * @param string  $addr      Mail address to verify
+ * @param boolean $check_dns Check DNS or not
+ */
+function check_mail_address($addr, $check_dns=FALSE) {
+	if(preg_match('/^(\w|\.|\-)+@\w+(\.\w+)*\.[a-zA-Z]{2,4}$/',$addr)) {
+		if($check_dns) {
+			$host = explode('@', $addr);
+			// Check for MX record
+			if( checkdnsrr($host[1], 'MX') ) return TRUE;
+			// Check for A record
+			if( checkdnsrr($host[1], 'A') ) return TRUE;
+			// Check for CNAME record
+			if( checkdnsrr($host[1], 'CNAME') ) return TRUE;
+		} else {
+			return TRUE;
+		}
+	}
+	return FALSE;
+}
+
+?>

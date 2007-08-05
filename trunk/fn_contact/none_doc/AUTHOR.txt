@@ -1,0 +1,12 @@
+Author:  Marco Segato segatom(at)users.sourceforge.net
+Website: http://marcosegato.altervista.org
+
+
+
+OTHER SOFTWARE INCLUDED:
+
+Some code included is from Giovanni Piller Cottrer
+<giovanni.piller@gmail.com> http://gigasoft.altervista.org/
+
+Library capcha.php is taken from Simple PHP Blog project:
+see http://www.simplephpblog.com/ for license terms

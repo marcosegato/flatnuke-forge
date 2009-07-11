@@ -1,19 +1,8 @@
 --------------------------------------------------------------------------------
-12/08/2006 11:59	Marco Segato
+dd/mm/yyyy hh:mm	Name
 
-FlatNuke Contact Section v1.1
-	- fixed Flatnuke configuration management
-	- removed W3C uncompliant tags
-	- added XHTML validation
-
---------------------------------------------------------------------------------
-
+Project vx.x
+	- change 1
+	- change 2
 
 --------------------------------------------------------------------------------
-24/01/2006 22:28	Marco Segato
-
-FlatNuke Contact Section v1.0
-	- first public release
-
---------------------------------------------------------------------------------
-

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<install_configuration>
+	<info>
+		<version>1.0.0</version>
+		<name>MyBlock</name>
+		<type>block</type>
+		<link>http://MyWebSiteUrl.Org/</link>
+		<author>Block Creator</author>
+		<mail>author@block.it</mail>
+		<description>This is a template to install a Dummy block in FlatNuke</description>
+	</info>
+	<pre_inst>
+		<message>MyBlock will be installed. Fill the form a press Proceed to continue</message>
+		<variable>
+			<name>name</name>
+			<title>The Block Title</title>
+			<default>MyBlock</default>
+			<check_expr>/^(([a-z]|[A-Z]|[0-9]|_)*)$/i</check_expr>
+			<ErrorMessage>Please Specify a correct Name: alphanumeric and '_' char only</ErrorMessage> 
+		</variable>
+		<variable>
+			<name>position</name>
+			<title>Position of Block</title>
+			<default>15</default>
+			<check_expr>/^([0-9]{2,3})$/i</check_expr>
+			<ErrorMessage>Please specify a number: 2 or 3 digit from 00 to 999</ErrorMessage>
+		</variable>
+		<variable>
+			<name>edge</name>
+			<title>Please enter Block side (sx/dx)</title>
+			<default>sx</default>
+			<check_expr>/^(sx|dx)$/i</check_expr>
+			<ErrorMessage>Block side must be 'sx' or 'dx'</ErrorMessage>
+		</variable>
+	</pre_inst>
+	<inst>
+		<action>
+			<type>copy</type>
+			<source>blocco.php</source>
+			<destination>sx/15_MyBlock.php</destination>
+		</action>
+	</inst>
+	<post_inst> <!-- Post installation message and action. -->
+		<message>The block was installed in sx side, position 15 and it was named MyBlock. Thanks.</message>
+		<!-- ToDo: Post installation configuration? -->
+	</post_inst>
+</install_configuration>

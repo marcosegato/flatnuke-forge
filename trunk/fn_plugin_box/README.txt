@@ -1,7 +1,8 @@
 WHAT'S THAT?
 ------------
-[...]
-
+Sezione per l'installazione di Estensioni per Flatnuke
+Nella cartella esempi sono contenuti dei file compressi che possono essere usati come base 
+di partenza per la creazione di installer personalizzati
 
 SUPPORT (READ CAREFULLY!)
 -------------------------

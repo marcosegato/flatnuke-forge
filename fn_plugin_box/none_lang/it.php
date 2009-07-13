@@ -1,0 +1,30 @@
+<?
+define("_FNINST_CLEANOK","La cartella temporanea &egrave; stata ripulita");
+define("_FNINST_CLEANERROR","Errore durante la pulizia della cartella temporanea");
+define("_FNINST_TEMPOK","La cartella temporanea &egrave; stata creata");
+define("_FNINST_TEMPERROR","Impossibile creare la cartella temporanea");
+define("_FNINST_SELFILE","Seleziona il file da installare:");
+define("_FNINST_LOADFILE","Carica File");
+define("_FNINST_UPLOADOK","L'estensione &egrave stato caricata con successo.");
+define("_FNINST_EXTINFO","Informazioni sull'estensione");
+define("_FNINST_BLOCK","Blocco Laterale");
+define("_FNINST_SECTION","Sezione");
+define("_FNINST_PLUGIN","Plugin");
+define("_FNINST_THEME","Tema");
+define("_FNINST_OTHER","Altro");
+define("_FNINST_AUTHOR","Autore");
+define("_FNINST_EMAIL","E-mail");
+define("_FNINST_DESCRIPTION","Descrizione");
+define("_FNINST_NOTVALID","File di installazione non valido");
+define("_FNINST_TYPE","Tipo");
+define("_FNINST_GOINSTALL","Procedi con l'installazione");
+define("_FNINST_UPLOADERROR","Problemi con l'upload del file");
+define("_FNINST_RESET","Reimposta");
+define("_FNINST_NEXT","Procedi");
+define("_FNINST_CHECK","Controllo");
+define("_FNINST_BY","tramite");
+define("_FNINST_PARAMETEROK","Corretto");
+define("_FNINST_PARAMETERERR","Errore");
+define("_FNINST_FINISHINST","Concludi l'installazione");
+define("_FNINST_SUCCESS","Installazione avvenuta con successo!");
+?>

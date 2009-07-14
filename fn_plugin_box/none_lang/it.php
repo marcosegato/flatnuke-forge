@@ -27,4 +27,5 @@ define("_FNINST_PARAMETEROK","Corretto");
 define("_FNINST_PARAMETERERR","Errore");
 define("_FNINST_FINISHINST","Concludi l'installazione");
 define("_FNINST_SUCCESS","Installazione avvenuta con successo!");
+define("_FNINST_TITLE","Tool per l'Installazione di componenti aggiuntivi su FlatNuke");
 ?>

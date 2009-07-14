@@ -1,6 +1,5 @@
-
 STEP 1
-[...]
+Copia la cartella dentro sections/
 
 STEP 2
 [...]

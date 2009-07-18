@@ -1,0 +1,31 @@
+<?
+define("_FNINST_CLEANOK","Temporarry directory was cleaned");
+define("_FNINST_CLEANERROR","Error: cannot clean temporary directory");
+define("_FNINST_TEMPOK","Temporary directory was created");
+define("_FNINST_TEMPERROR","Cannot create temporary directory");
+define("_FNINST_SELFILE","Select the file to install:");
+define("_FNINST_LOADFILE","Load File");
+define("_FNINST_UPLOADOK","The extensione was successfully uploaded.");
+define("_FNINST_EXTINFO","Information about extension");
+define("_FNINST_BLOCK","Block");
+define("_FNINST_SECTION","Section");
+define("_FNINST_PLUGIN","Plugin");
+define("_FNINST_THEME","Theme");
+define("_FNINST_OTHER","Other");
+define("_FNINST_AUTHOR","Author");
+define("_FNINST_EMAIL","E-mail");
+define("_FNINST_DESCRIPTION","Description");
+define("_FNINST_NOTVALID","Not a valid installation file");
+define("_FNINST_TYPE","Type");
+define("_FNINST_GOINSTALL","Proceed");
+define("_FNINST_UPLOADERROR","Cannot upload file");
+define("_FNINST_RESET","Reset");
+define("_FNINST_NEXT","Proceed");
+define("_FNINST_CHECK","Check");
+define("_FNINST_BY","againt");
+define("_FNINST_PARAMETEROK","Correct");
+define("_FNINST_PARAMETERERR","Error");
+define("_FNINST_FINISHINST","End installation");
+define("_FNINST_SUCCESS","Extension installed successfully");
+define("_FNINST_TITLE","Tool to install additional components for FlatNuke");
+?>

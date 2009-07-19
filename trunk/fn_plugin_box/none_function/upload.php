@@ -31,6 +31,7 @@ if ($info->type=="block") $tipo=_FNINST_BLOCK;
 if ($info->type=="section") $tipo=_FNINST_SECTION;
 if ($info->type=="plugin") $tipo=_FNINST_PLUGIN;
 if ($info->type=="theme") $tipo=_FNINST_THEME;
+if ($info->type=="system_update") $tipo=_FNINST_SYSUPDATE;
 if ($info->type=="other") $tipo=_FNINST_OTHER;
 echo _FNINST_AUTHOR.": " . $info->author . "<br>";
 echo _FNINST_EMAIL.": <a href=\"mailto:".$info->mail."\">" . $info->mail . "</a><br>";

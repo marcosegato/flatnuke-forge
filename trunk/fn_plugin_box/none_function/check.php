@@ -1,7 +1,13 @@
 <? 
 $xml = simplexml_load_file($target_path."install.xml");
+if (!($xml instanceof SimpleXMLElement)) {
+	fn_die("PLUGINBOX",_FNINST_NOTVALID,__FILE__,__LINE__);
+}
 $n2 = $xml->xpath('//install_configuration/pre_inst');
 $pre = $n2[0];
+if (!($pre instanceof SimpleXMLElement)) {
+	fn_die("PLUGINBOX",_FNINST_NOTVALID,__FILE__,__LINE__);
+}
 $var=$pre->variable;
 foreach ($var as $el_var) {
 	if ($el_var->check_expr!="") {

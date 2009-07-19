@@ -1,23 +1,26 @@
 <?
 $to=$action->destination;
-if ($info->type=="block") {
-	$to="blocks/".$to;
-}
-if ($info->type=="section") {
-	$to="sections/".$to;
-}
-if ($info->type=="theme") {
-	$to="themes/".$to;
-}
-if ($info->type=="plugins") {
-	$to=$to;
-}
-if ($info->type=="other") {
-	$to=$to;
+switch ($tipo) {
+	case "block";
+		$to=get_fn_dir("blocks")."/".$to;
+	break;
+	case "section";
+		$to=get_fn_dir("sections")."/".$to;
+	break;
+	case "theme";
+		$to=get_fn_dir("themes")."/".$to;
+	break;
+	case "plugins";
+	break;
+	case "system_update";
+	break;
+	case "other";
+	break;
+	default:
 }
 
 $result = mkdir($to);
 
-if ($result==false) die("Problema durante la creazione della cartella $to");
+if ($result==false) fn_die("PLUGINBOX","Cannot create directory in $to",__FILE__,__LINE__);
 else echo "<p>Creo la cartella $to...</p>";
 ?>

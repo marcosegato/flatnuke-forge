@@ -17,39 +17,35 @@ if (is_admin()) {
 			include_once (get_fn_dir("sections")."/$mod/none_lang/it.php");
 	}
 	?><h2><?=_FNINST_TITLE?></h2><?
-	switch ($op) {
-		case "check":
+		if ($op=="check") {
 			//Controlla che siano rispettati i vincoli di installazione
 			$error=Array();
 			include get_fn_dir("sections")."/$mod/none_function/check.php";
 			if (sizeof($error)==0) $op="inst";
 			else $op="pre";
-		break;
-		case "":
+		}
+		if ($op=="") {
 			//pulizia della cartella uploads e visualizzazione form per l'upload dell'estensione
 			include get_fn_dir("sections")."/$mod/none_function/clean.php";
 			include get_fn_dir("sections")."/$mod/none_function/start.php";
-		break;
-		case "upload":
+		}
+		if ($op=="upload") {
 			//upload dell'estensione
 			include get_fn_dir("sections")."/$mod/none_function/upload.php";
-		break;
-		case "pre":
+		}
+		if ($op=="pre") {
 			//operazioni preliminari all'installazione
 			include get_fn_dir("sections")."/$mod/none_function/pre.php";
-		break;
-		case "inst":
+		}
+		if ($op=="inst") {
 			//[ToDo=spostare questo include]
 			include get_fn_dir("sections")."/$mod/none_function/deepcopy.php";
 			//operazioni per installare l'estensione
 			include get_fn_dir("sections")."/$mod/none_function/inst.php";
-		break;
-		case "post":
+		}
+		if ($op=="post") {
 			//operazioni post-installazione
 			include get_fn_dir("sections")."/$mod/none_function/post.php";
-		break;
-		default:
-			fn_die("PLUGINBOX","Op not valid[$op]",__FILE__,__LINE__);
+		}
 	}
-}
 else fn_die("PLUGINBOX","Only Administrator allowed here!",__FILE__,__LINE__);
